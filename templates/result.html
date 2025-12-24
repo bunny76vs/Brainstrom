@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>College Comparison Dashboard | Brain Storm</title>
+
+    <!-- IMPORTANT FOR MOBILE -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- BASIC STYLING (CLEAN & PROFESSIONAL) -->
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            background: #f4f6f8;
+            color: #1e293b;
+        }
+
+        header {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        header p {
+            margin-top: 8px;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .filter-box {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+
+        label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            font-size: 15px;
+            border-radius: 8px;
+            border: 1px solid #cbd5f5;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+        }
+
+        .college-card {
+            background: white;
+            padding: 20px;
+            border-radius: 14px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: transform 0.2s ease;
+        }
+
+        .college-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .college-card h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        canvas {
+            max-width: 220px;
+            margin: 15px auto;
+            display: block;
+        }
+
+        .apply-btn {
+            display: block;
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .apply-btn:hover {
+            background: #1e40af;
+        }
+
+        footer {
+            text-align: center;
+            margin: 40px 0 20px;
+            font-size: 14px;
+            color: #64748b;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header>
+    <h1>College Comparison Dashboard</h1>
+    <p>Compare colleges based on fees, infrastructure & placements</p>
+</header>
+
+<!-- MAIN CONTENT -->
+<div class="container">
+
+    <!-- COURSE SELECTION -->
+    <div class="filter-box">
+        <label for="courseSelect">Select Course</label>
+        <select id="courseSelect">
+            <option value="">Loading courses...</option>
+        </select>
+    </div>
+
+    <!-- COLLEGE RESULTS -->
+    <div id="output" class="grid"></div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+    * Data shown is indicative and for educational guidance purposes only.
+</footer>
+
+<!-- SCRIPTS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register | Brain Strom</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/regis.css') }}">
+</head>
+<body>
+
+<main>
+    <header>Register</header>
+
+    <!-- ✅ IMPORTANT: method + action added -->
+    <form method="POST" action="/register">
+
+        <div class="form_wrapper">
+            <!-- ✅ name="username" -->
+            <input type="text" name="username" placeholder=" " required>
+            <label>Name :</label>
+        </div>
+
+        <div class="form_wrapper">
+            <!-- ✅ name="password" -->
+            <input type="password" name="password" placeholder=" " required>
+            <label>Password :</label>
+        </div>
+
+        <div class="form_wrapper">
+            <!-- ✅ name="confirm_password" -->
+            <input type="password" name="confirm_password" placeholder=" " required>
+            <label>Confirm Password :</label>
+        </div>
+
+        <button type="submit">Register</button>
+
+    </form>
+</main>
+
+</body>
+</html>

@@ -1,0 +1,102 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: url("../images/student-portal-daydream-360-degree-stereoscopic-image_4x.png")
+        no-repeat center center / cover;
+}
+
+main {
+    width: 320px;
+    padding: 60px 25px;
+    border-radius: 12px;
+    border: 3px solid wheat;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(6px);
+    position: relative;
+}
+
+main header {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 25px;
+    background: white;
+    border-radius: 0 0 12px 12px;
+    font-weight: bold;
+}
+
+form {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* WRAPPER */
+.form_wrapper {
+    position: relative;
+}
+
+/* INPUT */
+input {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 25px;
+    border: 2px solid wheat;
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    outline: none;
+}
+
+/* HIDE PLACEHOLDER */
+input::placeholder {
+    color: transparent;
+}
+
+/* LABEL */
+.form_wrapper label {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #e5e7eb;
+    font-size: 14px;
+    pointer-events: none;
+    transition: 0.3s ease;
+}
+
+/* FLOAT */
+.form_wrapper input:focus + label,
+.form_wrapper input:not(:placeholder-shown) + label {
+    top: -8px;
+    font-size: 11px;
+    background: rgba(0, 0, 0, 0.55);
+    padding: 2px 6px;
+    border-radius: 6px;
+    color: wheat;
+}
+
+/* BUTTON */
+button {
+    padding: 12px;
+    border-radius: 25px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    background: wheat;
+    color: black;
+}
+
+button:hover {
+    background: #f5deb3;
+}

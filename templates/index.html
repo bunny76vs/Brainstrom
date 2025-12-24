@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brain Strom</title>
+
+  <!-- FAVICON -->
+  <link
+    rel="shortcut icon"
+    href="https://sidcupfamilygolf.com/wp-content/themes/puttosaurus/favicons/favicon-32x32.png"
+    type="image/x-icon"
+  />
+
+  <!-- REMIX ICON -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/remixicon@3.4.0/fonts/remixicon.css"
+    rel="stylesheet"
+  />
+
+  <!-- MAIN CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/ut.css') }}">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div id="nav">
+  <img src="{{ url_for('static', filename='images/LOGO.jpg') }}" alt="Logo">
+
+  <h4><a href="/">HOME</a></h4>
+  <h4><a href="/login">SIGN OUT</a></h4>
+  <h4><a href="/service">SERVICE</a></h4>
+  <h4><a href="/register">SIGN UP</a></h4>
+</div>
+
+<!-- CURSOR EFFECT -->
+<div id="cursor"></div>
+<div id="cursor-blur"></div>
+
+<!-- BACKGROUND VIDEO -->
+<video autoplay loop muted playsinline>
+  <source src="{{ url_for('static', filename='videos/new mu .mp4') }}" type="video/mp4">
+</video>
+
+<!-- MAIN CONTENT -->
+<div id="main">
+
+  <div id="page1">
+    <h1>VIEW. EXPLORE. STUDY.</h1>
+    <h2>WELCOME TO BRAIN STROM!</h2>
+    <p>
+      Our purpose is to provide expert guidance and solutions tailored to the unique needs of
+      our clients, fostering growth, efficiency, and success in their endeavors
+    </p>
+    <div id="arrow">
+      <i class="ri-arrow-down-line"></i>
+    </div>
+  </div>
+
+  <div id="page2">
+    <div id="scroller">
+      <div id="scroller-in">
+        <h4>PLACEMENT OPORTUNITY</h4>
+        <h4>200% BETTER PLACEMENT</h4>
+        <h4>GUIDANCE</h4>
+        <h4>SYSTEM</h4>
+      </div>
+      <div id="scroller-in">
+        <h4>PLACEMENT OPORTUNITY</h4>
+        <h4>200% BETTER PLACEMENT</h4>
+        <h4>GUIDANCE</h4>
+        <h4>SYSTEM</h4>
+      </div>
+    </div>
+
+    <div id="about-us">
+      <img src="{{ url_for('static', filename='images/LOGO.jpg') }}" alt="">
+      <div id="about-us-in">
+        <h3>ABOUT US</h3>
+        <p>
+          Here, expertise meets innovation. With a diverse team of industry specialists,
+          we offer tailored solutions to elevate your business.
+        </p>
+      </div>
+      <img src="{{ url_for('static', filename='images/DSC_0016.JPG') }}" alt="">
+    </div>
+
+    <div id="about-us">
+      <img src="{{ url_for('static', filename='images/WhatsApp Image 2024-03-30 at 04.21.40_1d95d805.jpg') }}" alt="">
+      <div id="about-us-in">
+        <p>
+          "Success is not the key to happiness. Happiness is the key to success.
+          If you love what you are doing, you will be successful." - Veer baba
+        </p>
+      </div>
+      <img src="{{ url_for('static', filename='images/WhatsApp Image 2024-04-07 at 14.10.51_cbe253e1.jpg') }}" alt="">
+    </div>
+
+    <div id="green-div">
+      <img src="https://eiwgew27fhz.exactdn.com/wp-content/themes/puttosaurus/img/dots-side.svg" alt="">
+      <h4>SIGN UP FOR BRAIN STORM NEWS AND SPECIAL OFFERS</h4>
+      <img src="https://eiwgew27fhz.exactdn.com/wp-content/themes/puttosaurus/img/dots-side.svg" alt="">
+    </div>
+  </div>
+
+  <div id="page3">
+    <p>
+      Consulting apps connect users with experts across industries, providing access to
+      specialized knowledge that may not be available locally.
+    </p>
+    <img id="colon1" src="https://eiwgew27fhz.exactdn.com/wp-content/themes/puttosaurus/img/quote-left.svg">
+    <img id="colon2" src="https://eiwgew27fhz.exactdn.com/wp-content/themes/puttosaurus/img/quote-right.svg">
+  </div>
+
+  <div id="page4">
+    <h1>WHAT ARE YOU WAITING FOR?</h1>
+    <div class="elem">
+      <h2>UNIVERSITIES</h2>
+      <img src="{{ url_for('static', filename='images/1607013025Cover.webp') }}">
+    </div>
+    <div class="elem">
+      <h2>SCHOOLS</h2>
+      <img src="{{ url_for('static', filename='images/0d39cac2bbb6e6e0d8d3eff14c3bd217.jpg') }}">
+    </div>
+    <div class="elem">
+      <h2>COACHING INSTITUTES</h2>
+      <img src="{{ url_for('static', filename='images/OIP (1).jpg') }}">
+    </div>
+  </div>
+
+  <div id="footer">
+    <div id="f1">
+      <img src="{{ url_for('static', filename='images/LOGO.jpg') }}">
+    </div>
+    <div id="f2">
+      <h3>UNIVERSITIES</h3>
+      <h3>SCHOOLS</h3>
+      <h3>INSTITUTES</h3>
+    </div>
+    <div id="f3">
+      <h3>PLACEMENT OPORTUNITY</h3>
+      <h3>CARRIER GUIDANCE</h3>
+      <h3>SCOPE CREATION</h3>
+    </div>
+    <div id="f4">
+      <h4>
+        VEER SINGH<br>
+        MHOW CANT.<br>
+        453441<br>
+        EMAIL: veersinghff07@gmail.com<br>
+        TEL: 8871015246
+      </h4>
+    </div>
+  </div>
+
+</div>
+
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.1/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.1/ScrollTrigger.min.js"></script>
+
+<!-- MAIN JS -->
+<script src="{{ url_for('static', filename='js/ut.js') }}"></script>
+
+</body>
+</html>

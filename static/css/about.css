@@ -1,0 +1,149 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+}
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+}
+
+.navbar a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+.navbar a:hover {
+    text-decoration: underline;
+}
+.about-header {
+    background: url('https://th.bing.com/th/id/OIP.-AiMEJwS_BCc8rFQCqWxwAHaD2?rs=1&pid=ImgDetMain') no-repeat center center/cover;
+    color: #fff;
+    height: 50vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.about-header h1 {
+    font-size: 3em;
+    margin-bottom: 10px;
+}
+
+.about-header p {
+    font-size: 1.5em;
+}
+
+.about-section {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px;
+    background-color: #fff;
+}
+
+.about-content, .about-image {
+    flex: 1;
+    margin: 20px;
+}
+
+.about-content h2 {
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+.about-content p {
+    font-size: 1.2em;
+    line-height: 1.8;
+}
+
+.about-image img {
+    max-width: 100%;
+    border-radius: 10px;
+}
+
+/* Mission and Vision section styling */
+.mission-vision {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+.mission, .vision {
+    flex: 1;
+    margin: 20px;
+}
+
+.mission h2, .vision h2 {
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+.mission p, .vision p {
+    font-size: 1.2em;
+    line-height: 1.8;
+}
+
+/* Team section styling */
+.team {
+    padding: 20px;
+    background-color: #fff;
+    text-align: center;
+}
+
+.team h2 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+.team-members {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.team-member {
+    margin: 20px;
+    text-align: center;
+}
+
+.team-member img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.team-member h3 {
+    font-size: 1.5em;
+    margin-bottom: 5px;
+}
+
+.team-member p {
+    font-size: 1.2em;
+    color: #666;
+}
+
+/* Footer styling */
+.footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}

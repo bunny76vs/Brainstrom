@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login | Brain Strom</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+</head>
+
+<body>
+
+<main>
+    <header>Login</header>
+
+    <!-- ✅ method + action are REQUIRED -->
+    <form method="POST" action="/login">
+
+        <div class="form_wrapper">
+            <!-- ✅ name attribute REQUIRED -->
+            <input type="text" name="username" placeholder=" " required>
+            <label>Username :</label>
+        </div>
+
+        <div class="form_wrapper">
+            <!-- ✅ name attribute REQUIRED -->
+            <input type="password" name="password" placeholder=" " required>
+            <label>Password :</label>
+        </div>
+
+        <button type="submit">Login</button>
+
+        <div class="new_account">
+            Don’t have an account?
+            <a href="/register">Sign up</a>
+        </div>
+
+    </form>
+</main>
+
+</body>
+</html>

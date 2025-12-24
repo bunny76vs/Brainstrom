@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Education & Career Prediction | Brain Storm</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            background: #f4f6f8;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 520px;
+            margin: auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #1e293b;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #cbd5f5;
+            font-size: 14px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 15px;
+            padding: 12px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        button:hover {
+            background: #1e40af;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Education & Career Prediction</h2>
+
+    <form id="predictionForm">
+
+        <div class="input-group">
+            <label>Full Name</label>
+            <input type="text" id="name" required>
+        </div>
+
+        <div class="input-group">
+            <label>Place</label>
+            <input type="text" id="place" required>
+        </div>
+
+        <div class="input-group">
+            <label>Highest Education</label>
+            <select id="education" required>
+                <option value="">Select</option>
+                <option value="12th">12th</option>
+                <option value="Diploma">Diploma</option>
+                <option value="Graduation">Graduation</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>Stream</label>
+            <select id="stream" required>
+                <option value="">Select</option>
+                <option value="science">Science</option>
+                <option value="commerce">Commerce</option>
+                <option value="arts">Arts</option>
+                <option value="engineering">Engineering</option>
+                <option value="medicine">Medicine</option>
+                <option value="business">Business</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>Highest Education Percentage</label>
+            <input type="number" id="percentage" min="0" max="100" required>
+        </div>
+
+        <div class="input-group">
+            <label>Mobile Number</label>
+            <input type="tel" id="mobile" required>
+        </div>
+
+        <div class="input-group">
+            <label>Email</label>
+            <input type="email" id="email" required>
+        </div>
+
+        <button type="submit">Predict My Future</button>
+    </form>
+</div>
+
+<script>
+document.getElementById("predictionForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const params = new URLSearchParams({
+        name: document.getElementById("name").value,
+        place: document.getElementById("place").value,
+        education: document.getElementById("education").value,
+        stream: document.getElementById("stream").value,
+        percentage: document.getElementById("percentage").value,
+        mobile: document.getElementById("mobile").value,
+        email: document.getElementById("email").value
+    });
+
+    // IMPORTANT: Flask route, NOT result.html
+    window.location.href = `/result?${params.toString()}`;
+});
+</script>
+
+</body>
+</html>
