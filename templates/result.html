@@ -5,6 +5,9 @@
     <title>College Comparison Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <!-- Chart.js (REQUIRED FOR GRAPH) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -37,6 +40,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 20px;
         }
 
         th, td {
@@ -47,6 +51,10 @@
 
         th {
             background: #f1f5f9;
+        }
+
+        canvas {
+            margin-top: 40px;
         }
     </style>
 </head>
@@ -61,33 +69,32 @@
 <div class="container">
 
     <label><strong>Select Course</strong></label>
-    <!-- ✅ REQUIRED ID -->
     <select id="courseSelect">
         <option value="">Select Course</option>
     </select>
 
-    <!-- ✅ REQUIRED ID -->
     <div id="collegeResult"></div>
+
+    <!-- ✅ GRAPH CANVAS -->
+    <canvas id="collegeChart" height="120"></canvas>
 
 </div>
 
-<!-- ================= SAFE JAVASCRIPT ================= -->
+<!-- ================= JAVASCRIPT ================= -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
     const courseSelect = document.getElementById("courseSelect");
     const collegeResult = document.getElementById("collegeResult");
+    const chartCanvas = document.getElementById("collegeChart");
 
-    if (!courseSelect || !collegeResult) {
-        console.error("HTML elements missing");
-        return;
-    }
+    let chartInstance = null;
 
     const params = new URLSearchParams(window.location.search);
     const stream = params.get("stream");
     const percentage = params.get("percentage");
 
-    // -------- LOAD COURSES --------
+    // ---------------- LOAD COURSES ----------------
     fetch(`/api/courses/${stream}`)
         .then(res => res.json())
         .then(courses => {
@@ -97,18 +104,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (!Array.isArray(courses)) return;
 
-            courses.forEach(item => {
+            courses.forEach(c => {
                 const option = document.createElement("option");
-                option.value = item.name;      // ✅ correct field
-                option.textContent = item.name;
+                option.value = c.name;      // ✅ correct field
+                option.textContent = c.name;
                 courseSelect.appendChild(option);
             });
         })
         .catch(err => {
-            console.error("Course error:", err);
+            console.error("Course load error:", err);
         });
 
-    // -------- LOAD COLLEGES --------
+    // ---------------- LOAD COLLEGES + GRAPH ----------------
     courseSelect.addEventListener("change", function () {
         if (!this.value) return;
 
@@ -122,6 +129,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then(res => res.json())
         .then(colleges => {
+
             collegeResult.innerHTML = "";
 
             if (!Array.isArray(colleges) || colleges.length === 0) {
@@ -129,6 +137,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
+            // -------- TABLE --------
             let html = `
                 <table>
                     <tr>
@@ -150,6 +159,39 @@ document.addEventListener("DOMContentLoaded", function () {
 
             html += "</table>";
             collegeResult.innerHTML = html;
+
+            // -------- GRAPH --------
+            const labels = colleges.map(c => c.college_name);
+            const data = colleges.map(c => c.min_percentage);
+
+            if (chartInstance) {
+                chartInstance.destroy(); // ✅ prevent overlap bug
+            }
+
+            chartInstance = new Chart(chartCanvas, {
+                type: "bar",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: "Minimum Percentage Required",
+                        data: data,
+                        backgroundColor: "#2563eb"
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+
+        })
+        .catch(err => {
+            console.error("College load error:", err);
         });
     });
 
