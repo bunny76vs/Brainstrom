@@ -1,21 +1,25 @@
 from flask import Flask, render_template, request, jsonify, redirect, session
 import mysql.connector
-import re   # ✅ added for password validation
+import re
+import os
 
 from models.course_model import get_courses_by_stream
 from models.college_model import get_colleges
 
 app = Flask(__name__)
-app.secret_key = "brainstorm_secret_key"
+
+# 🔐 SECRET KEY (FROM ENV VARIABLE)
+app.secret_key = os.getenv("SECRET_KEY", "brainstorm_secret_key")
 
 
-# ---------------- DATABASE ----------------
+# ---------------- DATABASE (RAILWAY MYSQL) ----------------
 def get_db():
     return mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="Veer453441@",   # your password
-        database="brainstrom"
+        host=os.getenv("MYSQLHOST"),
+        user=os.getenv("MYSQLUSER"),
+        password=os.getenv("MYSQLPASSWORD"),
+        database=os.getenv("MYSQLDATABASE"),
+        port=int(os.getenv("MYSQLPORT"))
     )
 
 
@@ -62,17 +66,13 @@ def result():
 def register():
     if request.method == "POST":
         try:
-            print("FORM DATA:", request.form)
-
             username = request.form["username"]
             password = request.form["password"]
             confirm_password = request.form["confirm_password"]
 
-            # confirm password check
             if password != confirm_password:
                 return "Passwords do not match"
 
-            # 🔐 password validation (ONLY NEW LOGIC)
             is_valid, message = is_valid_password(password)
             if not is_valid:
                 return message
@@ -80,31 +80,28 @@ def register():
             db = get_db()
             cursor = db.cursor(dictionary=True)
 
-            # username uniqueness (UNCHANGED)
             cursor.execute(
                 "SELECT * FROM users WHERE username=%s",
                 (username,)
             )
-            existing_user = cursor.fetchone()
 
-            if existing_user:
+            if cursor.fetchone():
                 db.close()
                 return "Username already exists"
 
-            # insert user
             cursor.execute(
                 "INSERT INTO users (username, password) VALUES (%s, %s)",
                 (username, password)
             )
+
             db.commit()
             db.close()
 
-            print("✅ USER INSERTED SUCCESSFULLY")
             return redirect("/login")
 
         except Exception as e:
-            print("❌ SIGNUP ERROR:", e)
-            return "Signup failed. Check server logs."
+            print("REGISTER ERROR:", e)
+            return "Signup failed"
 
     return render_template("regis.html")
 
@@ -114,8 +111,6 @@ def register():
 def login():
     if request.method == "POST":
         try:
-            print("LOGIN DATA:", request.form)
-
             username = request.form["username"]
             password = request.form["password"]
 
@@ -126,20 +121,19 @@ def login():
                 "SELECT * FROM users WHERE username=%s AND password=%s",
                 (username, password)
             )
+
             user = cursor.fetchone()
             db.close()
 
             if user:
                 session["user"] = username
-                print("✅ LOGIN SUCCESS")
                 return redirect("/")
             else:
-                print("❌ LOGIN FAILED")
                 return "Invalid username or password"
 
         except Exception as e:
-            print("❌ LOGIN ERROR:", e)
-            return "Login failed. Check server logs."
+            print("LOGIN ERROR:", e)
+            return "Login failed"
 
     return render_template("login.html")
 
@@ -166,6 +160,6 @@ def recommend():
     )
 
 
-# ---------------- RUN ----------------
+# ---------------- RUN APP ----------------
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
