@@ -8,18 +8,18 @@ from models.college_model import get_colleges
 
 app = Flask(__name__)
 
-# 🔐 SECRET KEY
+# ---------------- SECRET KEY ----------------
 app.secret_key = os.getenv("SECRET_KEY", "brainstorm_secret_key")
 
 
-# ---------------- DATABASE (RAILWAY MYSQL - SAFE) ----------------
+# ---------------- DATABASE (RAILWAY - SAFE & STABLE) ----------------
 def get_db():
     return mysql.connector.connect(
         host=os.getenv("MYSQLHOST"),
         user=os.getenv("MYSQLUSER"),
         password=os.getenv("MYSQLPASSWORD"),
         database=os.getenv("MYSQLDATABASE"),
-        port=int(os.getenv("MYSQLPORT", "3306")),  # ✅ SAFE DEFAULT
+        port=int(os.getenv("MYSQLPORT", "3306")),  # ✅ prevents crash
         autocommit=True
     )
 
@@ -68,7 +68,6 @@ def register():
     if request.method == "POST":
         db = None
         cursor = None
-
         try:
             username = request.form.get("username")
             password = request.form.get("password")
@@ -101,13 +100,14 @@ def register():
 
             return redirect("/login")
 
+        # 🔴 SHOW REAL MYSQL ERROR
         except mysql.connector.Error as err:
             print("MYSQL ERROR:", err)
-            return "Database error occurred"
+            return f"MySQL Error: {err}"
 
         except Exception as e:
             print("GENERAL ERROR:", e)
-            return "Unexpected error occurred"
+            return f"Unexpected Error: {e}"
 
         finally:
             if cursor:
@@ -124,7 +124,6 @@ def login():
     if request.method == "POST":
         db = None
         cursor = None
-
         try:
             username = request.form.get("username")
             password = request.form.get("password")
@@ -149,11 +148,11 @@ def login():
 
         except mysql.connector.Error as err:
             print("MYSQL ERROR:", err)
-            return "Database error occurred"
+            return f"MySQL Error: {err}"
 
         except Exception as e:
             print("LOGIN ERROR:", e)
-            return "Login failed"
+            return f"Unexpected Error: {e}"
 
         finally:
             if cursor:
