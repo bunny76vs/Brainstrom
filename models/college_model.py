@@ -1,6 +1,7 @@
 import mysql.connector
 import os
 
+
 def get_db():
     return mysql.connector.connect(
         host=os.getenv("MYSQLHOST"),
@@ -11,24 +12,37 @@ def get_db():
         autocommit=True
     )
 
+
 def get_colleges(course, percentage):
-    db = get_db()
-    cursor = db.cursor(dictionary=True)
+    db = None
+    cursor = None
 
-    cursor.execute("""
-        SELECT
-            colleges.name AS college_name,
-            courses.name AS course,
-            courses.min_percentage
-        FROM courses
-        JOIN colleges ON colleges.id = courses.college_id
-        WHERE courses.name = %s
-        AND courses.min_percentage <= %s
-        ORDER BY courses.min_percentage DESC
-    """, (course, percentage))
+    try:
+        db = get_db()
+        cursor = db.cursor(dictionary=True)
 
-    data = cursor.fetchall()
+        cursor.execute("""
+            SELECT
+                colleges.name AS college_name,
+                courses.name AS course,
+                courses.min_percentage
+            FROM courses
+            INNER JOIN colleges 
+                ON colleges.id = courses.college_id
+            WHERE courses.name = %s
+              AND courses.min_percentage <= %s
+            ORDER BY courses.min_percentage DESC
+        """, (course, percentage))
 
-    cursor.close()
-    db.close()
-    return data
+        data = cursor.fetchall()
+        return data
+
+    except Exception as e:
+        print("COLLEGE MODEL ERROR:", e)
+        return []   # 🔑 NEVER break frontend
+
+    finally:
+        if cursor:
+            cursor.close()
+        if db:
+            db.close()

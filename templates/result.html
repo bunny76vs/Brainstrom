@@ -5,7 +5,7 @@
     <title>College Comparison Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Chart.js (REQUIRED FOR GRAPH) -->
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
@@ -75,47 +75,48 @@
 
     <div id="collegeResult"></div>
 
-    <!-- ✅ GRAPH CANVAS -->
-    <canvas id="collegeChart" height="120"></canvas>
+    <!-- BAR CHART -->
+    <canvas id="barChart" height="120"></canvas>
+
+    <!-- PIE CHART -->
+    <canvas id="pieChart" height="120"></canvas>
 
 </div>
 
-<!-- ================= JAVASCRIPT ================= -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
     const courseSelect = document.getElementById("courseSelect");
     const collegeResult = document.getElementById("collegeResult");
-    const chartCanvas = document.getElementById("collegeChart");
 
-    let chartInstance = null;
+    const barCanvas = document.getElementById("barChart");
+    const pieCanvas = document.getElementById("pieChart");
+
+    let barChart = null;
+    let pieChart = null;
 
     const params = new URLSearchParams(window.location.search);
     const stream = params.get("stream");
     const percentage = params.get("percentage");
 
-    // ---------------- LOAD COURSES ----------------
+    /* ---------------- LOAD COURSES ---------------- */
     fetch(`/api/courses/${stream}`)
         .then(res => res.json())
         .then(courses => {
-            console.log("Courses:", courses);
-
             courseSelect.innerHTML = '<option value="">Select Course</option>';
 
             if (!Array.isArray(courses)) return;
 
             courses.forEach(c => {
                 const option = document.createElement("option");
-                option.value = c.name;      // ✅ correct field
+                option.value = c.name;
                 option.textContent = c.name;
                 courseSelect.appendChild(option);
             });
         })
-        .catch(err => {
-            console.error("Course load error:", err);
-        });
+        .catch(err => console.error("Course load error:", err));
 
-    // ---------------- LOAD COLLEGES + GRAPH ----------------
+    /* ---------------- LOAD COLLEGES ---------------- */
     courseSelect.addEventListener("change", function () {
         if (!this.value) return;
 
@@ -137,7 +138,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            // -------- TABLE --------
+            /* ---------- TABLE ---------- */
             let html = `
                 <table>
                     <tr>
@@ -160,21 +161,20 @@ document.addEventListener("DOMContentLoaded", function () {
             html += "</table>";
             collegeResult.innerHTML = html;
 
-            // -------- GRAPH --------
+            /* ---------- DATA ---------- */
             const labels = colleges.map(c => c.college_name);
-            const data = colleges.map(c => c.min_percentage);
+            const values = colleges.map(c => c.min_percentage);
 
-            if (chartInstance) {
-                chartInstance.destroy(); // ✅ prevent overlap bug
-            }
+            /* ---------- BAR CHART ---------- */
+            if (barChart) barChart.destroy();
 
-            chartInstance = new Chart(chartCanvas, {
+            barChart = new Chart(barCanvas, {
                 type: "bar",
                 data: {
                     labels: labels,
                     datasets: [{
                         label: "Minimum Percentage Required",
-                        data: data,
+                        data: values,
                         backgroundColor: "#2563eb"
                     }]
                 },
@@ -189,10 +189,31 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             });
 
+            /* ---------- PIE CHART ---------- */
+            if (pieChart) pieChart.destroy();
+
+            pieChart = new Chart(pieCanvas, {
+                type: "pie",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: [
+                            "#2563eb",
+                            "#16a34a",
+                            "#dc2626",
+                            "#f59e0b",
+                            "#7c3aed"
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+
         })
-        .catch(err => {
-            console.error("College load error:", err);
-        });
+        .catch(err => console.error("College load error:", err));
     });
 
 });
