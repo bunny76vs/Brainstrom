@@ -12,14 +12,15 @@ app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "brainstorm_secret_key")
 
 
-# ---------------- DATABASE (RAILWAY MYSQL) ----------------
+# ---------------- DATABASE (RAILWAY MYSQL - SAFE) ----------------
 def get_db():
     return mysql.connector.connect(
         host=os.getenv("MYSQLHOST"),
         user=os.getenv("MYSQLUSER"),
         password=os.getenv("MYSQLPASSWORD"),
         database=os.getenv("MYSQLDATABASE"),
-        port=int(os.getenv("MYSQLPORT"))
+        port=int(os.getenv("MYSQLPORT", "3306")),  # ✅ SAFE DEFAULT
+        autocommit=True
     )
 
 
@@ -61,7 +62,7 @@ def result():
     return render_template("result.html")
 
 
-# ---------------- REGISTER (FIXED) ----------------
+# ---------------- REGISTER ----------------
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
@@ -69,7 +70,6 @@ def register():
         cursor = None
 
         try:
-            # ✅ SAFE FORM ACCESS (THIS FIXES YOUR BUG)
             username = request.form.get("username")
             password = request.form.get("password")
             confirm_password = request.form.get("confirm_password")
@@ -87,7 +87,6 @@ def register():
             db = get_db()
             cursor = db.cursor(dictionary=True)
 
-            # Check existing user
             cursor.execute(
                 "SELECT id FROM users WHERE username=%s",
                 (username,)
@@ -95,13 +94,11 @@ def register():
             if cursor.fetchone():
                 return "Username already exists"
 
-            # Insert user
             cursor.execute(
                 "INSERT INTO users (username, password) VALUES (%s, %s)",
                 (username, password)
             )
 
-            db.commit()
             return redirect("/login")
 
         except mysql.connector.Error as err:
