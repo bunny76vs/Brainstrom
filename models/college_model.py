@@ -1,16 +1,27 @@
-from db import get_db
+import mysql.connector
+import os
+
+def get_db():
+    return mysql.connector.connect(
+        host=os.getenv("MYSQLHOST"),
+        user=os.getenv("MYSQLUSER"),
+        password=os.getenv("MYSQLPASSWORD"),
+        database=os.getenv("MYSQLDATABASE"),
+        port=int(os.getenv("MYSQLPORT", "3306")),
+        autocommit=True
+    )
 
 def get_colleges(course, percentage):
     db = get_db()
     cursor = db.cursor(dictionary=True)
 
-    cursor.execute("""
-        SELECT name AS college, fees, infra, placement
-        FROM colleges
-        WHERE course=%s
-        AND %s BETWEEN min_percentage AND max_percentage
-    """, (course, percentage))
+    cursor.execute(
+        "SELECT * FROM colleges WHERE course=%s AND min_percentage<=%s",
+        (course, percentage)
+    )
 
-    colleges = cursor.fetchall()
+    data = cursor.fetchall()
+
+    cursor.close()
     db.close()
-    return colleges
+    return data
