@@ -1,64 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>College Comparison Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+        }
+
+        header {
+            background: #2563eb;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>College Comparison Dashboard</h1>
+    <p>Compare colleges based on eligibility</p>
+</header>
+
+<div class="container">
+
+    <label><strong>Select Course</strong></label>
+    <!-- ✅ REQUIRED ID -->
+    <select id="courseSelect">
+        <option value="">Select Course</option>
+    </select>
+
+    <!-- ✅ REQUIRED ID -->
+    <div id="collegeResult"></div>
+
+</div>
+
+<!-- ================= SAFE JAVASCRIPT ================= -->
 <script>
-    const params = new URLSearchParams(window.location.search);
-    const stream = params.get("stream");
-    const percentage = params.get("percentage");
+document.addEventListener("DOMContentLoaded", function () {
 
     const courseSelect = document.getElementById("courseSelect");
     const collegeResult = document.getElementById("collegeResult");
 
-    // ---------------- LOAD COURSES ----------------
+    if (!courseSelect || !collegeResult) {
+        console.error("HTML elements missing");
+        return;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const stream = params.get("stream");
+    const percentage = params.get("percentage");
+
+    // -------- LOAD COURSES --------
     fetch(`/api/courses/${stream}`)
         .then(res => res.json())
         .then(courses => {
-            console.log("Courses:", courses); // debug
+            console.log("Courses:", courses);
 
             courseSelect.innerHTML = '<option value="">Select Course</option>';
 
-            if (!Array.isArray(courses) || courses.length === 0) {
-                courseSelect.innerHTML = '<option>No courses found</option>';
-                return;
-            }
+            if (!Array.isArray(courses)) return;
 
             courses.forEach(item => {
-                // ✅ CORRECT FIELD
                 const option = document.createElement("option");
-                option.value = item.name;
+                option.value = item.name;      // ✅ correct field
                 option.textContent = item.name;
                 courseSelect.appendChild(option);
             });
         })
         .catch(err => {
-            console.error("Course Load Error:", err);
-            courseSelect.innerHTML = '<option>Error loading courses</option>';
+            console.error("Course error:", err);
         });
 
-    // ---------------- LOAD COLLEGES ----------------
+    // -------- LOAD COLLEGES --------
     courseSelect.addEventListener("change", function () {
-        const selectedCourse = this.value;
-        if (!selectedCourse) return;
+        if (!this.value) return;
 
         fetch("/api/recommend", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                course: selectedCourse,
+                course: this.value,
                 percentage: percentage
             })
         })
         .then(res => res.json())
         .then(colleges => {
+            collegeResult.innerHTML = "";
+
             if (!Array.isArray(colleges) || colleges.length === 0) {
-                collegeResult.innerHTML =
-                    "<p>No colleges found for this selection.</p>";
+                collegeResult.innerHTML = "<p>No colleges found.</p>";
                 return;
             }
 
             let html = `
                 <table>
                     <tr>
-                        <th>College Name</th>
+                        <th>College</th>
                         <th>Course</th>
-                        <th>Minimum %</th>
+                        <th>Min %</th>
                     </tr>
             `;
 
@@ -74,10 +150,11 @@
 
             html += "</table>";
             collegeResult.innerHTML = html;
-        })
-        .catch(err => {
-            console.error("College Load Error:", err);
-            collegeResult.innerHTML = "<p>Error loading colleges.</p>";
         });
     });
+
+});
 </script>
+
+</body>
+</html>
