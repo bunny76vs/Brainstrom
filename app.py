@@ -14,6 +14,10 @@ app.secret_key = os.getenv("SECRET_KEY", "brainstorm_secret_key")
 
 # ---------------- DATABASE (RAILWAY - SAFE & STABLE) ----------------
 def get_db():
+    print(
+        "MYSQLHOST =", os.getenv("MYSQLHOST"),
+        "MYSQLPORT =", os.getenv("MYSQLPORT")
+    )
     return mysql.connector.connect(
         host=os.getenv("MYSQLHOST"),
         user=os.getenv("MYSQLUSER"),
