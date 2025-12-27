@@ -1,152 +1,83 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>College Comparison Dashboard | Brain Storm</title>
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const stream = params.get("stream");
+    const percentage = params.get("percentage");
 
-    <!-- IMPORTANT FOR MOBILE -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    const courseSelect = document.getElementById("courseSelect");
+    const collegeResult = document.getElementById("collegeResult");
 
-    <!-- BASIC STYLING (CLEAN & PROFESSIONAL) -->
-    <style>
-        body {
-            margin: 0;
-            font-family: "Segoe UI", Tahoma, sans-serif;
-            background: #f4f6f8;
-            color: #1e293b;
-        }
+    // ---------------- LOAD COURSES ----------------
+    fetch(`/api/courses/${stream}`)
+        .then(res => res.json())
+        .then(courses => {
+            console.log("Courses:", courses); // debug
 
-        header {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            color: white;
-            padding: 25px;
-            text-align: center;
-        }
+            courseSelect.innerHTML = '<option value="">Select Course</option>';
 
-        header h1 {
-            margin: 0;
-            font-size: 28px;
-        }
+            if (!Array.isArray(courses) || courses.length === 0) {
+                courseSelect.innerHTML = '<option>No courses found</option>';
+                return;
+            }
 
-        header p {
-            margin-top: 8px;
-            opacity: 0.9;
-        }
+            courses.forEach(item => {
+                // ✅ CORRECT FIELD
+                const option = document.createElement("option");
+                option.value = item.name;
+                option.textContent = item.name;
+                courseSelect.appendChild(option);
+            });
+        })
+        .catch(err => {
+            console.error("Course Load Error:", err);
+            courseSelect.innerHTML = '<option>Error loading courses</option>';
+        });
 
-        .container {
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
+    // ---------------- LOAD COLLEGES ----------------
+    courseSelect.addEventListener("change", function () {
+        const selectedCourse = this.value;
+        if (!selectedCourse) return;
 
-        .filter-box {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-            margin-bottom: 30px;
-        }
+        fetch("/api/recommend", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                course: selectedCourse,
+                percentage: percentage
+            })
+        })
+        .then(res => res.json())
+        .then(colleges => {
+            if (!Array.isArray(colleges) || colleges.length === 0) {
+                collegeResult.innerHTML =
+                    "<p>No colleges found for this selection.</p>";
+                return;
+            }
 
-        label {
-            font-weight: 600;
-            display: block;
-            margin-bottom: 8px;
-        }
+            let html = `
+                <table>
+                    <tr>
+                        <th>College Name</th>
+                        <th>Course</th>
+                        <th>Minimum %</th>
+                    </tr>
+            `;
 
-        select {
-            width: 100%;
-            padding: 12px;
-            font-size: 15px;
-            border-radius: 8px;
-            border: 1px solid #cbd5f5;
-        }
+            colleges.forEach(c => {
+                html += `
+                    <tr>
+                        <td>${c.college_name}</td>
+                        <td>${c.course}</td>
+                        <td>${c.min_percentage}</td>
+                    </tr>
+                `;
+            });
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 25px;
-        }
-
-        .college-card {
-            background: white;
-            padding: 20px;
-            border-radius: 14px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            text-align: center;
-            transition: transform 0.2s ease;
-        }
-
-        .college-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .college-card h3 {
-            margin-bottom: 10px;
-            font-size: 18px;
-        }
-
-        canvas {
-            max-width: 220px;
-            margin: 15px auto;
-            display: block;
-        }
-
-        .apply-btn {
-            display: block;
-            margin-top: 15px;
-            padding: 10px;
-            border-radius: 8px;
-            background: #2563eb;
-            color: white;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .apply-btn:hover {
-            background: #1e40af;
-        }
-
-        footer {
-            text-align: center;
-            margin: 40px 0 20px;
-            font-size: 14px;
-            color: #64748b;
-        }
-    </style>
-</head>
-
-<body>
-
-<!-- HEADER -->
-<header>
-    <h1>College Comparison Dashboard</h1>
-    <p>Compare colleges based on fees, infrastructure & placements</p>
-</header>
-
-<!-- MAIN CONTENT -->
-<div class="container">
-
-    <!-- COURSE SELECTION -->
-    <div class="filter-box">
-        <label for="courseSelect">Select Course</label>
-        <select id="courseSelect">
-            <option value="">Loading courses...</option>
-        </select>
-    </div>
-
-    <!-- COLLEGE RESULTS -->
-    <div id="output" class="grid"></div>
-
-</div>
-
-<!-- FOOTER -->
-<footer>
-    * Data shown is indicative and for educational guidance purposes only.
-</footer>
-
-<!-- SCRIPTS -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
-
-</body>
-</html>
+            html += "</table>";
+            collegeResult.innerHTML = html;
+        })
+        .catch(err => {
+            console.error("College Load Error:", err);
+            collegeResult.innerHTML = "<p>Error loading colleges.</p>";
+        });
+    });
+</script>
