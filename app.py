@@ -8,7 +8,7 @@ from models.college_model import get_colleges
 
 app = Flask(__name__)
 
-# 🔐 SECRET KEY (FROM ENV VARIABLE)
+# 🔐 SECRET KEY
 app.secret_key = os.getenv("SECRET_KEY", "brainstorm_secret_key")
 
 
@@ -61,14 +61,21 @@ def result():
     return render_template("result.html")
 
 
-# ---------------- REGISTER ----------------
+# ---------------- REGISTER (FIXED) ----------------
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
+        db = None
+        cursor = None
+
         try:
-            username = request.form["username"]
-            password = request.form["password"]
-            confirm_password = request.form["confirm_password"]
+            # ✅ SAFE FORM ACCESS (THIS FIXES YOUR BUG)
+            username = request.form.get("username")
+            password = request.form.get("password")
+            confirm_password = request.form.get("confirm_password")
+
+            if not username or not password or not confirm_password:
+                return "All fields are required"
 
             if password != confirm_password:
                 return "Passwords do not match"
@@ -80,28 +87,36 @@ def register():
             db = get_db()
             cursor = db.cursor(dictionary=True)
 
+            # Check existing user
             cursor.execute(
-                "SELECT * FROM users WHERE username=%s",
+                "SELECT id FROM users WHERE username=%s",
                 (username,)
             )
-
             if cursor.fetchone():
-                db.close()
                 return "Username already exists"
 
+            # Insert user
             cursor.execute(
                 "INSERT INTO users (username, password) VALUES (%s, %s)",
                 (username, password)
             )
 
             db.commit()
-            db.close()
-
             return redirect("/login")
 
+        except mysql.connector.Error as err:
+            print("MYSQL ERROR:", err)
+            return "Database error occurred"
+
         except Exception as e:
-            print("REGISTER ERROR:", e)
-            return "Signup failed"
+            print("GENERAL ERROR:", e)
+            return "Unexpected error occurred"
+
+        finally:
+            if cursor:
+                cursor.close()
+            if db:
+                db.close()
 
     return render_template("regis.html")
 
@@ -110,9 +125,15 @@ def register():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
+        db = None
+        cursor = None
+
         try:
-            username = request.form["username"]
-            password = request.form["password"]
+            username = request.form.get("username")
+            password = request.form.get("password")
+
+            if not username or not password:
+                return "All fields are required"
 
             db = get_db()
             cursor = db.cursor(dictionary=True)
@@ -121,9 +142,7 @@ def login():
                 "SELECT * FROM users WHERE username=%s AND password=%s",
                 (username, password)
             )
-
             user = cursor.fetchone()
-            db.close()
 
             if user:
                 session["user"] = username
@@ -131,9 +150,19 @@ def login():
             else:
                 return "Invalid username or password"
 
+        except mysql.connector.Error as err:
+            print("MYSQL ERROR:", err)
+            return "Database error occurred"
+
         except Exception as e:
             print("LOGIN ERROR:", e)
             return "Login failed"
+
+        finally:
+            if cursor:
+                cursor.close()
+            if db:
+                db.close()
 
     return render_template("login.html")
 
