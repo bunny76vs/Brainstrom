@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Education & Career Prediction | Brain Storm</title>
+    <title>College Comparison Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
@@ -12,134 +12,169 @@
             padding: 30px;
         }
 
-        .container {
-            max-width: 520px;
+        h1 {
+            text-align: center;
+            color: #1e3a8a;
+            margin-bottom: 10px;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: #475569;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            max-width: 900px;
             margin: auto;
-            background: #ffffff;
-            padding: 30px;
+            background: white;
+            padding: 25px;
             border-radius: 12px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-        }
-
-        h2 {
-            text-align: center;
-            margin-bottom: 25px;
-            color: #1e293b;
-        }
-
-        .input-group {
-            margin-bottom: 16px;
         }
 
         label {
             font-weight: 600;
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
 
-        input, select {
+        select {
             width: 100%;
             padding: 10px;
             border-radius: 6px;
             border: 1px solid #cbd5f5;
+            margin-bottom: 20px;
             font-size: 14px;
         }
 
-        button {
+        table {
             width: 100%;
-            margin-top: 15px;
-            padding: 12px;
-            background: #2563eb;
-            color: white;
-            font-size: 16px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
+            border-collapse: collapse;
+            margin-top: 20px;
         }
 
-        button:hover {
-            background: #1e40af;
+        th, td {
+            border: 1px solid #e5e7eb;
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background: #2563eb;
+            color: white;
+        }
+
+        .no-data {
+            text-align: center;
+            color: #64748b;
+            margin-top: 20px;
         }
     </style>
 </head>
 
 <body>
 
-<div class="container">
-    <h2>Education & Career Prediction</h2>
+<h1>College Comparison Dashboard</h1>
+<p class="subtitle">Compare colleges based on fees, infrastructure & placements</p>
 
-    <form id="predictionForm">
+<div class="card">
 
-        <div class="input-group">
-            <label>Full Name</label>
-            <input type="text" id="name" required>
-        </div>
+    <label for="courseSelect">Select Course</label>
+    <select id="courseSelect">
+        <option value="">Loading courses...</option>
+    </select>
 
-        <div class="input-group">
-            <label>Place</label>
-            <input type="text" id="place" required>
-        </div>
-
-        <div class="input-group">
-            <label>Highest Education</label>
-            <select id="education" required>
-                <option value="">Select</option>
-                <option value="12th">12th</option>
-                <option value="Diploma">Diploma</option>
-                <option value="Graduation">Graduation</option>
-            </select>
-        </div>
-
-        <div class="input-group">
-            <label>Stream</label>
-            <select id="stream" required>
-                <option value="">Select</option>
-                <option value="science">Science</option>
-                <option value="commerce">Commerce</option>
-                <option value="arts">Arts</option>
-                <option value="engineering">Engineering</option>
-                <option value="medicine">Medicine</option>
-                <option value="business">Business</option>
-            </select>
-        </div>
-
-        <div class="input-group">
-            <label>Highest Education Percentage</label>
-            <input type="number" id="percentage" min="0" max="100" required>
-        </div>
-
-        <div class="input-group">
-            <label>Mobile Number</label>
-            <input type="tel" id="mobile" required>
-        </div>
-
-        <div class="input-group">
-            <label>Email</label>
-            <input type="email" id="email" required>
-        </div>
-
-        <button type="submit">Predict My Future</button>
-    </form>
+    <div id="collegeResult"></div>
 </div>
 
 <script>
-document.getElementById("predictionForm").addEventListener("submit", function (e) {
-    e.preventDefault();
+    // Read URL parameters
+    const params = new URLSearchParams(window.location.search);
+    const stream = params.get("stream");
+    const percentage = params.get("percentage");
 
-    const params = new URLSearchParams({
-        name: document.getElementById("name").value,
-        place: document.getElementById("place").value,
-        education: document.getElementById("education").value,
-        stream: document.getElementById("stream").value,
-        percentage: document.getElementById("percentage").value,
-        mobile: document.getElementById("mobile").value,
-        email: document.getElementById("email").value
+    const courseSelect = document.getElementById("courseSelect");
+    const collegeResult = document.getElementById("collegeResult");
+
+    // ---------------- LOAD COURSES ----------------
+    fetch(`/api/courses/${stream}`)
+        .then(res => res.json())
+        .then(courses => {
+            courseSelect.innerHTML = '<option value="">Select Course</option>';
+
+            if (courses.length === 0) {
+                courseSelect.innerHTML = '<option>No courses found</option>';
+                return;
+            }
+
+            // ✅ FIX: USE course field, NOT whole object
+            courses.forEach(item => {
+                const option = document.createElement("option");
+                option.value = item.course;      // IMPORTANT
+                option.textContent = item.course;
+                courseSelect.appendChild(option);
+            });
+        })
+        .catch(err => {
+            console.error("Course Load Error:", err);
+            courseSelect.innerHTML = '<option>Error loading courses</option>';
+        });
+
+    // ---------------- LOAD COLLEGES ----------------
+    courseSelect.addEventListener("change", function () {
+        const selectedCourse = this.value;
+
+        if (!selectedCourse) {
+            collegeResult.innerHTML = "";
+            return;
+        }
+
+        fetch("/api/recommend", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                course: selectedCourse,
+                percentage: percentage
+            })
+        })
+        .then(res => res.json())
+        .then(colleges => {
+
+            if (colleges.length === 0) {
+                collegeResult.innerHTML = "<p class='no-data'>No colleges found for this selection.</p>";
+                return;
+            }
+
+            let table = `
+                <table>
+                    <tr>
+                        <th>College Name</th>
+                        <th>Course</th>
+                        <th>Minimum %</th>
+                    </tr>
+            `;
+
+            colleges.forEach(college => {
+                table += `
+                    <tr>
+                        <td>${college.college_name}</td>
+                        <td>${college.course}</td>
+                        <td>${college.min_percentage}</td>
+                    </tr>
+                `;
+            });
+
+            table += "</table>";
+            collegeResult.innerHTML = table;
+        })
+        .catch(err => {
+            console.error("College Load Error:", err);
+            collegeResult.innerHTML = "<p class='no-data'>Error loading colleges.</p>";
+        });
     });
-
-    // IMPORTANT: Flask route, NOT result.html
-    window.location.href = `/result?${params.toString()}`;
-});
 </script>
 
 </body>
