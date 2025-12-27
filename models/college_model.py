@@ -15,10 +15,17 @@ def get_colleges(course, percentage):
     db = get_db()
     cursor = db.cursor(dictionary=True)
 
-    cursor.execute(
-        "SELECT * FROM colleges WHERE course=%s AND min_percentage<=%s",
-        (course, percentage)
-    )
+    cursor.execute("""
+        SELECT
+            colleges.name AS college_name,
+            courses.name AS course,
+            courses.min_percentage
+        FROM courses
+        JOIN colleges ON colleges.id = courses.college_id
+        WHERE courses.name = %s
+        AND courses.min_percentage <= %s
+        ORDER BY courses.min_percentage DESC
+    """, (course, percentage))
 
     data = cursor.fetchall()
 
