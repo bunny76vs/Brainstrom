@@ -1,21 +1,18 @@
-/* =====================================================
-   MOBILE RESPONSIVE FIX
-   (DOES NOT CHANGE DESKTOP LOOK)
-===================================================== */
+/* ===================================================
+   MOBILE SCALE FIX (DESKTOP LOOK PRESERVED)
+   NO LAYOUT CHANGES – ONLY SCALING
+=================================================== */
 @media (max-width: 768px) {
 
-  /* Disable mouse cursor effects on touch devices */
-  #cursor,
-  #cursor-blur {
-    display: none;
+  /* prevent horizontal overflow */
+  html, body {
+    overflow-x: hidden;
   }
 
-  /* NAVBAR: keep same style, just prevent overflow */
+  /* navbar: same layout, smaller spacing */
   #nav {
     padding: 0 20px;
     gap: 20px;
-    height: auto;
-    flex-wrap: wrap;
   }
 
   #nav img {
@@ -26,13 +23,9 @@
     font-size: 14px;
   }
 
-  /* PAGE 1 TEXT SCALING (same design, smaller size) */
+  /* hero text: scale down, same alignment */
   #page1 h1 {
     font-size: 42px;
-  }
-
-  #page1 h1::before {
-    display: none; /* avoids overlap on small screens */
   }
 
   #page1 h2 {
@@ -40,34 +33,29 @@
   }
 
   #page1 p {
-    width: 90%;
+    width: 85%;
     font-size: 14px;
   }
 
+  /* arrow too big for mobile */
   #page1 #arrow {
     display: none;
   }
 
-  /* SCROLLER TEXT */
+  /* scroller text scale only */
   #scroller h4 {
     font-size: 48px;
   }
 
-  /* ABOUT US: stack vertically, same spacing feel */
+  /* about-us: same flex, just smaller */
   #about-us {
-    flex-direction: column;
+    padding: 0 20px;
     height: auto;
-    padding: 40px 20px;
-    gap: 20px;
   }
 
   #about-us img {
-    width: 200px;
-    height: 200px;
-  }
-
-  #about-us-in {
-    width: 100%;
+    height: 160px;
+    width: 160px;
   }
 
   #about-us-in h3 {
@@ -79,70 +67,36 @@
     line-height: 22px;
   }
 
-  /* GREEN DIV */
-  #green-div {
-    flex-direction: column;
-    height: auto;
-    padding: 30px 20px;
-  }
-
+  /* green div scaling */
   #green-div h4 {
-    width: 100%;
     font-size: 15px;
     line-height: 22px;
   }
 
-  #green-div img {
-    display: none;
-  }
-
-  /* PAGE 3 */
-  #page3 {
-    height: auto;
-    padding: 60px 20px;
-  }
-
+  /* page 3 text scaling */
   #page3 > p {
-    width: 100%;
+    width: 85%;
     font-size: 18px;
     line-height: 26px;
   }
 
-  #page3 img {
-    display: none;
-  }
-
-  /* PAGE 4 */
-  #page4 {
-    flex-direction: column;
-    height: auto;
-    padding: 60px 20px;
-    gap: 20px;
-  }
-
-  #page4 h1 {
-    position: static;
-    font-size: 28px;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-
+  /* page 4 cards: same layout, just smaller */
   .elem {
-    width: 100%;
-    height: 220px;
+    height: 200px;
   }
 
   .elem h2 {
     font-size: 18px;
   }
 
-  /* FOOTER */
+  #page4 h1 {
+    font-size: 32px;
+    top: -10%;
+  }
+
+  /* footer: same structure, smaller text */
   #footer {
-    flex-direction: column;
-    height: auto;
-    padding: 40px 20px;
-    gap: 20px;
-    text-align: center;
+    padding: 0 20px;
   }
 
   #f2 h3,
@@ -153,5 +107,11 @@
   #f4 h4 {
     font-size: 12px;
     line-height: 18px;
+  }
+
+  /* cursor effects disabled on touch */
+  #cursor,
+  #cursor-blur {
+    display: none;
   }
 }
