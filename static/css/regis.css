@@ -42,10 +42,12 @@ form {
     gap: 18px;
 }
 
+/* WRAPPER */
 .form_wrapper {
     position: relative;
 }
 
+/* INPUT */
 input {
     width: 100%;
     padding: 12px 15px;
@@ -56,10 +58,12 @@ input {
     outline: none;
 }
 
+/* HIDE PLACEHOLDER */
 input::placeholder {
     color: transparent;
 }
 
+/* LABEL */
 .form_wrapper label {
     position: absolute;
     left: 18px;
@@ -71,6 +75,7 @@ input::placeholder {
     transition: 0.3s ease;
 }
 
+/* FLOAT */
 .form_wrapper input:focus + label,
 .form_wrapper input:not(:placeholder-shown) + label {
     top: -8px;
@@ -81,6 +86,7 @@ input::placeholder {
     color: wheat;
 }
 
+/* BUTTON */
 button {
     padding: 12px;
     border-radius: 25px;
